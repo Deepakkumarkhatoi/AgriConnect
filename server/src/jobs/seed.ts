@@ -32,15 +32,19 @@ async function seed() {
     AuditLog.deleteMany({}),
   ]);
 
-  console.log(`Collections cleared. Seeding accounts...`);
+  console.log(`Collections cleared. Seeding accounts with 4 role-specific passwords...`);
 
-  const passwordHash = await bcrypt.hash('Password@123', 10);
+  // 4 distinct passwords for RBAC testing
+  const farmerPasswordHash = await bcrypt.hash('Farmer@123', 10);
+  const buyerPasswordHash = await bcrypt.hash('Buyer@123', 10);
+  const officerPasswordHash = await bcrypt.hash('Officer@123', 10);
+  const adminPasswordHash = await bcrypt.hash('Admin@123', 10);
 
   // 1. Create Demo Users for all 4 roles
   const farmer = await User.create({
     name: 'Ramesh Mohapatra',
     email: 'farmer@agriconnect.com',
-    passwordHash,
+    passwordHash: farmerPasswordHash,
     role: 'farmer',
     status: 'active',
     phone: '+91 98765 43210',
@@ -53,7 +57,7 @@ async function seed() {
   const buyer = await User.create({
     name: 'Ananya Agro Traders',
     email: 'buyer@agriconnect.com',
-    passwordHash,
+    passwordHash: buyerPasswordHash,
     role: 'buyer',
     status: 'active',
     phone: '+91 98123 45678',
@@ -66,7 +70,7 @@ async function seed() {
   const officer = await User.create({
     name: 'Dr. Debabrata Jena (DAO)',
     email: 'officer@agriconnect.com',
-    passwordHash,
+    passwordHash: officerPasswordHash,
     role: 'officer',
     status: 'active',
     phone: '+91 94370 11223',
@@ -80,7 +84,7 @@ async function seed() {
   const admin = await User.create({
     name: 'Platform Administrator',
     email: 'admin@agriconnect.com',
-    passwordHash,
+    passwordHash: adminPasswordHash,
     role: 'admin',
     status: 'active',
     phone: '+91 90000 00000',
@@ -481,11 +485,11 @@ async function seed() {
 
   console.log(`\n🎉 Database Seed Completed Successfully!`);
   console.log(`--------------------------------------------------`);
-  console.log(`Demo Credentials (All passwords: Password@123):`);
-  console.log(`🌾 Farmer:   farmer@agriconnect.com`);
-  console.log(`🛒 Buyer:    buyer@agriconnect.com`);
-  console.log(`🏛️  Officer:  officer@agriconnect.com`);
-  console.log(`👑 Admin:    admin@agriconnect.com`);
+  console.log(`Role-Specific Demo Credentials:`);
+  console.log(`🌾 Farmer:   farmer@agriconnect.com   | Password: Farmer@123`);
+  console.log(`🛒 Buyer:    buyer@agriconnect.com    | Password: Buyer@123`);
+  console.log(`🏛️  Officer:  officer@agriconnect.com  | Password: Officer@123`);
+  console.log(`👑 Admin:    admin@agriconnect.com    | Password: Admin@123`);
   console.log(`--------------------------------------------------\n`);
 
   await mongoose.disconnect();

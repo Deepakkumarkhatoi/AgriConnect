@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { RoleGuard } from '../../components/auth/RoleGuard';
 import {
   ShieldCheck,
   MapPin,
@@ -72,7 +73,8 @@ export default function OfficerDashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <RoleGuard allowedRoles={['officer']} dashboardName="Agricultural Officer Advisory Desk">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Officer Desk Banner */}
       <div className="bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -219,5 +221,6 @@ export default function OfficerDashboard() {
         </div>
       </div>
     </div>
+    </RoleGuard>
   );
 }

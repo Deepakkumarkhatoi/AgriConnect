@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { RoleGuard } from '../../components/auth/RoleGuard';
 import {
   Sprout,
   Store,
@@ -116,7 +117,8 @@ export default function FarmerDashboard() {
   const totalEstimatedHarvest = crops.reduce((acc, c) => acc + c.expectedYieldQuintals, 0);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <RoleGuard allowedRoles={['farmer']} dashboardName="Farmer Workspace">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Profile & Farm Banner */}
       <div className="bg-gradient-to-r from-emerald-900 via-forest-900 to-green-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -374,5 +376,6 @@ export default function FarmerDashboard() {
         </div>
       )}
     </div>
+    </RoleGuard>
   );
 }

@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { useAuth, UserRole, DEMO_CREDENTIALS, getDashboardPathForRole } from '../context/AuthContext';
 import { FALLBACK_DATA } from '../lib/api';
 import {
   Sprout,
@@ -23,8 +24,14 @@ import {
 } from 'lucide-react';
 
 export default function HomePage() {
+  const router = useRouter();
   const { user, t, quickLoginAs } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleHomeQuickLogin = async (role: UserRole) => {
+    await quickLoginAs(role);
+    router.push(getDashboardPathForRole(role));
+  };
 
   const mandiPrices = FALLBACK_DATA.mandiPrices;
   const schemes = FALLBACK_DATA.schemes;
@@ -61,69 +68,53 @@ export default function HomePage() {
               Compare mandi prices in real-time, get microclimate weather alerts, check government scheme eligibility, and sell directly to verified buyers without middlemen.
             </p>
 
-            {/* Quick Role Access Buttons */}
+            {/* Quick Role Access Buttons with Distinct Passwords */}
             <div className="pt-4">
               <p className="text-xs uppercase font-bold tracking-widest text-emerald-300 mb-3">
-                {t.quickDemoLogin} — Experience Any Role with One Click:
+                {t.quickDemoLogin} — Test As Role (4 Distinct Passwords):
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-                <button
-                  onClick={() => quickLoginAs('farmer')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition shadow-md ${
-                    user?.role === 'farmer'
-                      ? 'bg-emerald-500 text-white ring-2 ring-emerald-300'
-                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
-                  }`}
-                >
-                  <span>🌾 Farmer Portal</span>
-                </button>
-                <button
-                  onClick={() => quickLoginAs('buyer')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition shadow-md ${
-                    user?.role === 'buyer'
-                      ? 'bg-amber-500 text-white ring-2 ring-amber-300'
-                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
-                  }`}
-                >
-                  <span>🛒 Buyer / Trader</span>
-                </button>
-                <button
-                  onClick={() => quickLoginAs('officer')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition shadow-md ${
-                    user?.role === 'officer'
-                      ? 'bg-blue-600 text-white ring-2 ring-blue-300'
-                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
-                  }`}
-                >
-                  <span>🏛️ Agri Officer Desk</span>
-                </button>
-                <button
-                  onClick={() => quickLoginAs('admin')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition shadow-md ${
-                    user?.role === 'admin'
-                      ? 'bg-purple-600 text-white ring-2 ring-purple-300'
-                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
-                  }`}
-                >
-                  <span>👑 Admin Hub</span>
-                </button>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-3xl mx-auto">
+                {(Object.keys(DEMO_CREDENTIALS) as UserRole[]).map((r) => {
+                  const cred = DEMO_CREDENTIALS[r];
+                  const isActive = user?.role === r;
+                  return (
+                    <button
+                      key={r}
+                      onClick={() => handleHomeQuickLogin(r)}
+                      className={`p-3 rounded-2xl text-left transition flex flex-col justify-between ${
+                        isActive
+                          ? 'bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-300'
+                          : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xl">{cred.icon}</span>
+                        <span className="text-[9px] font-mono font-bold bg-black/25 px-1.5 py-0.5 rounded text-emerald-200">
+                          {cred.pass}
+                        </span>
+                      </div>
+                      <p className="text-xs font-bold capitalize">{cred.title}</p>
+                      <p className="text-[10px] text-emerald-100/80 truncate">{cred.name.split(' ')[0]}</p>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             {/* Primary Action Links */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-6">
               <Link
-                href={user ? `/${user.role}` : '/farmer'}
+                href={user ? getDashboardPathForRole(user.role) : '/login'}
                 className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold text-sm shadow-lg shadow-emerald-900/40 hover:scale-102 transition"
               >
-                <span>Launch {user ? user.role.toUpperCase() : 'FARMER'} Workspace</span>
+                <span>Launch {user ? `${user.role.toUpperCase()} Dashboard` : 'Dashboard Portal'}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                href="/marketplace"
+                href="/register"
                 className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-sm backdrop-blur-md border border-white/20 transition"
               >
-                <span>Explore Produce Marketplace</span>
+                <span>Register with Role</span>
               </Link>
             </div>
           </div>
