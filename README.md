@@ -46,23 +46,9 @@ AgriConnect uses Mongoose to connect directly to any MongoDB Atlas Cloud Cluster
 1. In the left sidebar, click **Database**.
 2. Click the **Connect** button on your cluster.
 3. Choose **Drivers** (Node.js).
-4. Copy the connection string format:
-   ```text
-   mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/agriconnect?retryWrites=true&w=majority
-   ```
+4. Copy your cluster connection string.
 
-### Step 5: Update `server/.env`
-Open `server/.env` and replace `MONGODB_URI` with your connection string:
-```env
-PORT=5000
-NODE_ENV=development
-MONGODB_URI=mongodb+srv://agriadmin:YourPasswordHere@cluster0.abcde.mongodb.net/agriconnect?retryWrites=true&w=majority
-JWT_SECRET=agriconnect_jwt_secret_key_prod_quality_2026
-JWT_EXPIRES_IN=7d
-CLIENT_URL=http://localhost:3000
-```
-
-### Step 6: Populate Cluster with Realistic Seed Data
+### Step 5: Populate Cluster with Realistic Seed Data
 Run the automated seed command from the `server` directory:
 ```bash
 cd server
